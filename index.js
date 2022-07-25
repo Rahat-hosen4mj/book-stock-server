@@ -3,7 +3,7 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const app = express()
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 
 // midlewire 
@@ -20,13 +20,23 @@ async function run(){
 
         console.log('server side running')
         
-
+        // get all book 
         app.get('/book', async(req,res) =>{
             const query = {}
             const cursor = bookCollection.find(query);
             const books = await cursor.toArray();
             res.send(books);
         });
+
+        // get a specific book
+        app.get("/book/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const book = await bookCollection.findOne(query);
+            res.send(book);
+          });
+
+
     }
     finally{
 

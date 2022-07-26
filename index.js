@@ -21,6 +21,7 @@ async function run() {
   try {
     await client.connect();
     const bookCollection = client.db("book_stock").collection("books");
+    const itemCollection = client.db("book_stock").collection("addItems");
 
     console.log("server side running");
 
@@ -40,12 +41,22 @@ async function run() {
       res.send(book);
     });
 
-    // add book in the database
-    app.post("/book", async (req, res) => {
+    // get  item for specific  user
+    app.get("/item", async (req, res) => {
+      const email = req.query.email;
+      const query = {email: email};
+      const cursor = itemCollection.find(query);
+      const books = await cursor.toArray();
+      res.send(books);
+    });
+
+    // add item in the database
+    app.post("/item", async (req, res) => {
       const book = req.body;
-      const result = await bookCollection.insertOne(book);
+      const result = await itemCollection.insertOne(book);
       res.send(result);
     });
+
 
     // delete book from database
     app.delete("/book/:id", async (req, res) => {

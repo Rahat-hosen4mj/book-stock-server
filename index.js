@@ -36,6 +36,14 @@ async function run(){
             res.send(book);
           });
 
+      // delete part from database
+    app.delete('/book/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await bookCollection.deleteOne(query);
+      res.send(result);
+    })
+
 
     }
     finally{
